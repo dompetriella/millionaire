@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:millionaire/pages/money_page.dart';
+import 'package:millionaire/pages/question_page.dart';
 
 class StartPage extends ConsumerWidget {
   const StartPage({super.key});
@@ -42,6 +43,7 @@ class StartPage extends ConsumerWidget {
           ),
           MillionaireButton(
             text: 'Start',
+            fontSize: 24,
             onPressed: () {
               Navigator.push(
                 context,
