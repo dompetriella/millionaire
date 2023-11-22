@@ -4,6 +4,11 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:millionaire/pages/money_page.dart';
 import 'package:millionaire/pages/question_page.dart';
 
+import '../logic/api.dart';
+import '../logic/difficulty.dart';
+import '../models/question.dart';
+import '../provider.dart';
+
 class StartPage extends ConsumerWidget {
   const StartPage({super.key});
 
@@ -44,13 +49,18 @@ class StartPage extends ConsumerWidget {
           MillionaireButton(
             text: 'Start',
             fontSize: 24,
-            onPressed: () {
+            onPressed: () async {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const MoneyPage()),
               );
             },
           ),
+          MillionaireButton(
+              text: 'api',
+              onPressed: () async {
+                getQuestionsVoid(Difficulty.easy.name);
+              })
         ],
       ),
     );

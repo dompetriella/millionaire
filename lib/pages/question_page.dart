@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:millionaire/logic/api.dart';
 import 'package:millionaire/pages/start_page.dart';
+
+import '../provider.dart';
 
 class QuestionPage extends ConsumerWidget {
   const QuestionPage({super.key});
@@ -21,26 +24,26 @@ class QuestionPage extends ConsumerWidget {
           children: [
             Container(
               child: Text(
-                'QUESTION',
+                'Question',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             Center(
               child: Column(
                 children: [
-                  MillionaireButton(text: 'Answer 1', onPressed: () {}),
+                  MillionaireButton(text: 'a1', onPressed: () {}),
                   SizedBox(
                     height: 5,
                   ),
-                  MillionaireButton(text: 'Answer 2', onPressed: () {}),
+                  MillionaireButton(text: 'a2', onPressed: () {}),
                   SizedBox(
                     height: 5,
                   ),
-                  MillionaireButton(text: 'Answer 3', onPressed: () {}),
+                  MillionaireButton(text: 'a3', onPressed: () {}),
                   SizedBox(
                     height: 5,
                   ),
-                  MillionaireButton(text: 'Answer 4', onPressed: () {}),
+                  MillionaireButton(text: 'a4', onPressed: () {}),
                 ],
               ),
             ),
