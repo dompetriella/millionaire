@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:millionaire/logic/api.dart';
@@ -89,12 +90,11 @@ class MoneyPage extends ConsumerWidget {
                 fontSize: 24,
                 onPressed: () {
                   addQuestionToState(ref);
-                  Future.delayed(Duration(milliseconds: 500))
-                      .then((value) => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const QuestionPage()),
-                          ));
+                  Future.delayed(3.seconds).then((value) => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const QuestionPage()),
+                      ));
                 },
               ),
             ],
@@ -115,7 +115,7 @@ class MoneyTreeLevel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      color: ref.watch(questionIndexProvider) == questionIndex + 1
+      color: ref.watch(questionIndexProvider) + 1 == questionIndex
           ? Colors.amber.withOpacity(.25)
           : null,
       child: Padding(

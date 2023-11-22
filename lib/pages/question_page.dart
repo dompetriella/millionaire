@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:millionaire/models/question.dart';
 import 'package:millionaire/pages/start_page.dart';
+import 'package:millionaire/pages/winning_page.dart';
 import 'package:millionaire/provider.dart';
 
 import '../models/answer.dart';
@@ -83,11 +84,13 @@ class MillionaireAnswerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MillionaireButton(
+        buttonHexStringColor: '010044',
         buttonWidth: 300,
         fontSize: 18,
         text: answer.answerText,
         onPressed: () {
           showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (context) {
                 return AlertDialog(
@@ -101,12 +104,12 @@ class MillionaireAnswerButton extends StatelessWidget {
   }
 }
 
-class AnswerModal extends StatelessWidget {
+class AnswerModal extends ConsumerWidget {
   final bool correct;
   const AnswerModal({super.key, required this.correct});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       width: 200,
       height: 200,
@@ -137,12 +140,20 @@ class AnswerModal extends StatelessWidget {
                 onPressed: () {
                   // pop pop
                   if (correct) {
+                    if (ref.watch(questionIndexProvider) > 14) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WinningPage()),
+                      );
+                    }
+                    ref.read(questionIndexProvider.notifier).state =
+                        ref.read(questionIndexProvider) + 1;
                     Navigator.pop(context);
                     Navigator.pop(context);
                   } else {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    ref.read(questionIndexProvider.notifier).state = 0;
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   }
                 },
               ),

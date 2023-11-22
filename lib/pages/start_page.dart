@@ -90,6 +90,7 @@ class MillionaireButton extends StatelessWidget {
         ),
         child: Text(
           text,
+          textAlign: TextAlign.center,
           style: TextStyle(fontSize: fontSize, color: Colors.white),
         ));
   }

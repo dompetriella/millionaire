@@ -12,7 +12,7 @@ Future<Question> getQuestion(String difficulty) async {
   var unescape = HtmlUnescape();
   Response response;
   response = await dio.get(
-      'https://opentdb.com/api.php?amount=1&difficulty=$difficulty&type=multiple');
+      'https://opentdb.com/api.php?amount=5&category=9&difficulty=$difficulty&type=multiple');
 
   List<dynamic> questionsRaw = response.data['results'] as List;
 
