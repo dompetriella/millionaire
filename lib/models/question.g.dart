@@ -8,20 +8,14 @@ part of 'question.dart';
 
 _$QuestionImpl _$$QuestionImplFromJson(Map<String, dynamic> json) =>
     _$QuestionImpl(
-      questionText: json['question'] as String,
-      category: json['category'] as String,
-      difficulty: json['difficulty'] as String,
-      correctAnswer: json['correct_answer'] as String,
-      incorrectAnswers: (json['incorrect_answers'] as List<dynamic>)
-          .map((e) => e as String)
+      questionText: json['questionText'] as String,
+      answers: (json['answers'] as List<dynamic>)
+          .map((e) => Answer.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$$QuestionImplToJson(_$QuestionImpl instance) =>
     <String, dynamic>{
-      'question': instance.questionText,
-      'category': instance.category,
-      'difficulty': instance.difficulty,
-      'correct_answer': instance.correctAnswer,
-      'incorrect_answers': instance.incorrectAnswers,
+      'questionText': instance.questionText,
+      'answers': instance.answers,
     };

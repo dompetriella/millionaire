@@ -56,11 +56,6 @@ class StartPage extends ConsumerWidget {
               );
             },
           ),
-          MillionaireButton(
-              text: 'api',
-              onPressed: () async {
-                getQuestionsVoid(Difficulty.easy.name);
-              })
         ],
       ),
     );

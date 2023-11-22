@@ -20,16 +20,8 @@ Question _$QuestionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Question {
-  @JsonKey(name: 'question')
   String get questionText => throw _privateConstructorUsedError;
-  @JsonKey(name: 'category')
-  String get category => throw _privateConstructorUsedError;
-  @JsonKey(name: 'difficulty')
-  String get difficulty => throw _privateConstructorUsedError;
-  @JsonKey(name: 'correct_answer')
-  String get correctAnswer => throw _privateConstructorUsedError;
-  @JsonKey(name: 'incorrect_answers')
-  List<String> get incorrectAnswers => throw _privateConstructorUsedError;
+  List<Answer> get answers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,12 +34,7 @@ abstract class $QuestionCopyWith<$Res> {
   factory $QuestionCopyWith(Question value, $Res Function(Question) then) =
       _$QuestionCopyWithImpl<$Res, Question>;
   @useResult
-  $Res call(
-      {@JsonKey(name: 'question') String questionText,
-      @JsonKey(name: 'category') String category,
-      @JsonKey(name: 'difficulty') String difficulty,
-      @JsonKey(name: 'correct_answer') String correctAnswer,
-      @JsonKey(name: 'incorrect_answers') List<String> incorrectAnswers});
+  $Res call({String questionText, List<Answer> answers});
 }
 
 /// @nodoc
@@ -64,32 +51,17 @@ class _$QuestionCopyWithImpl<$Res, $Val extends Question>
   @override
   $Res call({
     Object? questionText = null,
-    Object? category = null,
-    Object? difficulty = null,
-    Object? correctAnswer = null,
-    Object? incorrectAnswers = null,
+    Object? answers = null,
   }) {
     return _then(_value.copyWith(
       questionText: null == questionText
           ? _value.questionText
           : questionText // ignore: cast_nullable_to_non_nullable
               as String,
-      category: null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as String,
-      difficulty: null == difficulty
-          ? _value.difficulty
-          : difficulty // ignore: cast_nullable_to_non_nullable
-              as String,
-      correctAnswer: null == correctAnswer
-          ? _value.correctAnswer
-          : correctAnswer // ignore: cast_nullable_to_non_nullable
-              as String,
-      incorrectAnswers: null == incorrectAnswers
-          ? _value.incorrectAnswers
-          : incorrectAnswers // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      answers: null == answers
+          ? _value.answers
+          : answers // ignore: cast_nullable_to_non_nullable
+              as List<Answer>,
     ) as $Val);
   }
 }
@@ -102,12 +74,7 @@ abstract class _$$QuestionImplCopyWith<$Res>
       __$$QuestionImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(name: 'question') String questionText,
-      @JsonKey(name: 'category') String category,
-      @JsonKey(name: 'difficulty') String difficulty,
-      @JsonKey(name: 'correct_answer') String correctAnswer,
-      @JsonKey(name: 'incorrect_answers') List<String> incorrectAnswers});
+  $Res call({String questionText, List<Answer> answers});
 }
 
 /// @nodoc
@@ -122,32 +89,17 @@ class __$$QuestionImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? questionText = null,
-    Object? category = null,
-    Object? difficulty = null,
-    Object? correctAnswer = null,
-    Object? incorrectAnswers = null,
+    Object? answers = null,
   }) {
     return _then(_$QuestionImpl(
       questionText: null == questionText
           ? _value.questionText
           : questionText // ignore: cast_nullable_to_non_nullable
               as String,
-      category: null == category
-          ? _value.category
-          : category // ignore: cast_nullable_to_non_nullable
-              as String,
-      difficulty: null == difficulty
-          ? _value.difficulty
-          : difficulty // ignore: cast_nullable_to_non_nullable
-              as String,
-      correctAnswer: null == correctAnswer
-          ? _value.correctAnswer
-          : correctAnswer // ignore: cast_nullable_to_non_nullable
-              as String,
-      incorrectAnswers: null == incorrectAnswers
-          ? _value._incorrectAnswers
-          : incorrectAnswers // ignore: cast_nullable_to_non_nullable
-              as List<String>,
+      answers: null == answers
+          ? _value._answers
+          : answers // ignore: cast_nullable_to_non_nullable
+              as List<Answer>,
     ));
   }
 }
@@ -156,42 +108,25 @@ class __$$QuestionImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$QuestionImpl with DiagnosticableTreeMixin implements _Question {
   const _$QuestionImpl(
-      {@JsonKey(name: 'question') required this.questionText,
-      @JsonKey(name: 'category') required this.category,
-      @JsonKey(name: 'difficulty') required this.difficulty,
-      @JsonKey(name: 'correct_answer') required this.correctAnswer,
-      @JsonKey(name: 'incorrect_answers')
-      required final List<String> incorrectAnswers})
-      : _incorrectAnswers = incorrectAnswers;
+      {required this.questionText, required final List<Answer> answers})
+      : _answers = answers;
 
   factory _$QuestionImpl.fromJson(Map<String, dynamic> json) =>
       _$$QuestionImplFromJson(json);
 
   @override
-  @JsonKey(name: 'question')
   final String questionText;
+  final List<Answer> _answers;
   @override
-  @JsonKey(name: 'category')
-  final String category;
-  @override
-  @JsonKey(name: 'difficulty')
-  final String difficulty;
-  @override
-  @JsonKey(name: 'correct_answer')
-  final String correctAnswer;
-  final List<String> _incorrectAnswers;
-  @override
-  @JsonKey(name: 'incorrect_answers')
-  List<String> get incorrectAnswers {
-    if (_incorrectAnswers is EqualUnmodifiableListView)
-      return _incorrectAnswers;
+  List<Answer> get answers {
+    if (_answers is EqualUnmodifiableListView) return _answers;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_incorrectAnswers);
+    return EqualUnmodifiableListView(_answers);
   }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Question(questionText: $questionText, category: $category, difficulty: $difficulty, correctAnswer: $correctAnswer, incorrectAnswers: $incorrectAnswers)';
+    return 'Question(questionText: $questionText, answers: $answers)';
   }
 
   @override
@@ -200,10 +135,7 @@ class _$QuestionImpl with DiagnosticableTreeMixin implements _Question {
     properties
       ..add(DiagnosticsProperty('type', 'Question'))
       ..add(DiagnosticsProperty('questionText', questionText))
-      ..add(DiagnosticsProperty('category', category))
-      ..add(DiagnosticsProperty('difficulty', difficulty))
-      ..add(DiagnosticsProperty('correctAnswer', correctAnswer))
-      ..add(DiagnosticsProperty('incorrectAnswers', incorrectAnswers));
+      ..add(DiagnosticsProperty('answers', answers));
   }
 
   @override
@@ -213,25 +145,13 @@ class _$QuestionImpl with DiagnosticableTreeMixin implements _Question {
             other is _$QuestionImpl &&
             (identical(other.questionText, questionText) ||
                 other.questionText == questionText) &&
-            (identical(other.category, category) ||
-                other.category == category) &&
-            (identical(other.difficulty, difficulty) ||
-                other.difficulty == difficulty) &&
-            (identical(other.correctAnswer, correctAnswer) ||
-                other.correctAnswer == correctAnswer) &&
-            const DeepCollectionEquality()
-                .equals(other._incorrectAnswers, _incorrectAnswers));
+            const DeepCollectionEquality().equals(other._answers, _answers));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      questionText,
-      category,
-      difficulty,
-      correctAnswer,
-      const DeepCollectionEquality().hash(_incorrectAnswers));
+      runtimeType, questionText, const DeepCollectionEquality().hash(_answers));
 
   @JsonKey(ignore: true)
   @override
@@ -249,31 +169,16 @@ class _$QuestionImpl with DiagnosticableTreeMixin implements _Question {
 
 abstract class _Question implements Question {
   const factory _Question(
-      {@JsonKey(name: 'question') required final String questionText,
-      @JsonKey(name: 'category') required final String category,
-      @JsonKey(name: 'difficulty') required final String difficulty,
-      @JsonKey(name: 'correct_answer') required final String correctAnswer,
-      @JsonKey(name: 'incorrect_answers')
-      required final List<String> incorrectAnswers}) = _$QuestionImpl;
+      {required final String questionText,
+      required final List<Answer> answers}) = _$QuestionImpl;
 
   factory _Question.fromJson(Map<String, dynamic> json) =
       _$QuestionImpl.fromJson;
 
   @override
-  @JsonKey(name: 'question')
   String get questionText;
   @override
-  @JsonKey(name: 'category')
-  String get category;
-  @override
-  @JsonKey(name: 'difficulty')
-  String get difficulty;
-  @override
-  @JsonKey(name: 'correct_answer')
-  String get correctAnswer;
-  @override
-  @JsonKey(name: 'incorrect_answers')
-  List<String> get incorrectAnswers;
+  List<Answer> get answers;
   @override
   @JsonKey(ignore: true)
   _$$QuestionImplCopyWith<_$QuestionImpl> get copyWith =>
