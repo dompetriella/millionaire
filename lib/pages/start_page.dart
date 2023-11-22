@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:millionaire/logic/api.dart';
 import 'package:millionaire/pages/money_page.dart';
-import 'package:millionaire/pages/question_page.dart';
-
-import '../logic/api.dart';
-import '../logic/difficulty.dart';
-import '../models/question.dart';
-import '../provider.dart';
 
 class StartPage extends ConsumerWidget {
   const StartPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    int count = 0;
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -49,7 +46,7 @@ class StartPage extends ConsumerWidget {
           MillionaireButton(
             text: 'Start',
             fontSize: 24,
-            onPressed: () async {
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const MoneyPage()),
@@ -67,12 +64,14 @@ class MillionaireButton extends StatelessWidget {
   final double buttonWidth;
   final double buttonHeight;
   final double fontSize;
+  final String buttonHexStringColor;
   final VoidCallback onPressed;
 
   const MillionaireButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.buttonHexStringColor = '010044',
     this.buttonWidth = 250,
     this.buttonHeight = 60,
     this.fontSize = 16,
@@ -83,7 +82,7 @@ class MillionaireButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: HexColor('010044'),
+          backgroundColor: HexColor(buttonHexStringColor),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
               side: BorderSide(color: Colors.white, width: 2)),

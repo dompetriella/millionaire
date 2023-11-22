@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:millionaire/logic/api.dart';
 import 'package:millionaire/provider.dart';
 
 import 'question_page.dart';
@@ -87,11 +88,13 @@ class MoneyPage extends ConsumerWidget {
                 text: 'Question Page',
                 fontSize: 24,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const QuestionPage()),
-                  );
+                  addQuestionToState(ref);
+                  Future.delayed(Duration(milliseconds: 500))
+                      .then((value) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const QuestionPage()),
+                          ));
                 },
               ),
             ],
@@ -112,7 +115,7 @@ class MoneyTreeLevel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      color: ref.watch(moneyTreeIndexProvider) == questionIndex
+      color: ref.watch(questionIndexProvider) == questionIndex + 1
           ? Colors.amber.withOpacity(.25)
           : null,
       child: Padding(
@@ -125,7 +128,7 @@ class MoneyTreeLevel extends ConsumerWidget {
                   color: questionIndex % 5 == 0
                       ? Colors.amber.shade100
                       : Colors.amber.shade600,
-                  fontSize: 28,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700),
             ),
             SizedBox(
@@ -138,7 +141,7 @@ class MoneyTreeLevel extends ConsumerWidget {
                       ? Colors.amber.shade100
                       : Colors.amber.shade600,
                   letterSpacing: 3,
-                  fontSize: 28,
+                  fontSize: 20,
                   fontWeight: FontWeight.w700),
             )
           ],

@@ -7,39 +7,45 @@ import '../models/question.dart';
 import '../provider.dart';
 import 'difficulty.dart';
 
-Future<List<Question>> getQuestions(String difficulty) async {
+Future<Question> getQuestion(String difficulty) async {
   final dio = Dio();
   var unescape = HtmlUnescape();
   Response response;
   response = await dio.get(
-      'https://opentdb.com/api.php?amount=2&difficulty=$difficulty&type=multiple');
+      'https://opentdb.com/api.php?amount=1&difficulty=$difficulty&type=multiple');
 
   List<dynamic> questionsRaw = response.data['results'] as List;
-  List<Question> questions = [];
+
+  Question retrievedQuestion = Question(questionText: '', answers: []);
+
   for (var question in questionsRaw) {
     // get answers from JSON, make them object, put them all in a list, shuffle
     List<Answer> answers = [];
     for (var answerText in question['incorrect_answers']) {
-      answers.add(Answer(answerText: answerText, isCorrect: false));
+      answers.add(
+          Answer(answerText: unescape.convert(answerText), isCorrect: false));
     }
     answers
         .add(Answer(answerText: question['correct_answer'], isCorrect: true));
     answers.shuffle();
     // use the unescape library to clean the text from the JSON of html unwanteds
     var questionText = unescape.convert(question['question']);
-    questions.add(Question(questionText: questionText, answers: answers));
+    retrievedQuestion = Question(questionText: questionText, answers: answers);
   }
 
-  return questions;
+  return retrievedQuestion;
 }
 
-addQuestionsToState(WidgetRef ref) async {
-  List<Question> easyQuestions = await getQuestions(Difficulty.easy.name);
-  List<Question> mediumQuestions = await getQuestions(Difficulty.medium.name);
-  List<Question> hardQuestions = await getQuestions(Difficulty.hard.name);
-  easyQuestions.shuffle();
-  mediumQuestions.shuffle();
-  hardQuestions.shuffle();
-  List<Question> questions = easyQuestions + mediumQuestions + hardQuestions;
-  ref.read(questionsProvider.notifier).state = questions;
+addQuestionToState(WidgetRef ref) async {
+  var index = ref.watch(questionIndexProvider);
+  if (index < 6) {
+    ref.read(questionProvider.notifier).state =
+        await getQuestion(Difficulty.easy.name);
+  } else if (index > 5 && index < 11) {
+    ref.read(questionProvider.notifier).state =
+        await getQuestion(Difficulty.easy.name);
+  } else {
+    ref.read(questionProvider.notifier).state =
+        await getQuestion(Difficulty.easy.name);
+  }
 }
