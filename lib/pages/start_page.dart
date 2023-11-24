@@ -25,6 +25,9 @@ class StartPage extends HookConsumerWidget {
       initFunction(null);
       return null;
     }, []);
+
+    var mute = useState(true);
+
     return Stack(
       children: [
         Container(
@@ -64,13 +67,20 @@ class StartPage extends HookConsumerWidget {
                 fontSize: 28,
                 buttonHeight: 75,
                 buttonWidth: 260,
-                onPressed: () {
+                onPressed: () async {
                   ref.read(questionListProvider.notifier).clear();
                   prepareQuestionsForState(ref);
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const MoneyPage()),
                   );
+                  var player = ref.watch(gameSoundProvider);
+                  await player.stop().then(
+                      (value) => Future.delayed(4000.ms).then((value) async {
+                            await player.setAsset('assets/suspense.mp3');
+                            await player.setLoopMode(LoopMode.all);
+                            await player.play();
+                          }));
                 },
               ),
             ],
@@ -79,15 +89,14 @@ class StartPage extends HookConsumerWidget {
         GestureDetector(
           onTap: () async {
             var player = ref.watch(gameSoundProvider);
-            if (player.playing) {
+            mute.value = !mute.value;
+            if (player.volume > 0) {
               await player.setVolume(0);
-              ref.watch(muteProvider.notifier).state = true;
             } else {
               await player.setVolume(1);
               if (!ref.watch(gameSoundProvider).playing) {
                 await player.play();
               }
-              ref.watch(muteProvider.notifier).state = false;
             }
           },
           child: Padding(
@@ -95,7 +104,7 @@ class StartPage extends HookConsumerWidget {
             child: Align(
               alignment: Alignment.topRight,
               child: Icon(
-                ref.watch(muteProvider) ? Icons.volume_off : Icons.volume_up,
+                mute.value ? Icons.volume_off : Icons.volume_up,
                 size: 64,
                 color: Colors.white,
               ),

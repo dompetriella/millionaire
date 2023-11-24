@@ -15,8 +15,6 @@ final gameSoundProvider = StateProvider<AudioPlayer>((ref) {
   return AudioPlayer();
 });
 
-final muteProvider = StateProvider<bool>((ref) => true);
-
 final gameSoundEffectProvider = StateProvider<AudioPlayer>((ref) {
   return AudioPlayer();
 });

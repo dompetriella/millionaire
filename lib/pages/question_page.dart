@@ -123,13 +123,19 @@ class QuestionPage extends ConsumerWidget {
                                       buttonWidth: 150,
                                       buttonHexStringColor: 'CC9744',
                                       text: 'Quit',
-                                      onPressed: () {
+                                      onPressed: () async {
                                         ref
                                             .read(
                                                 questionIndexProvider.notifier)
                                             .state = 0;
                                         Navigator.popUntil(
                                             context, (route) => route.isFirst);
+                                        var player =
+                                            ref.watch(gameSoundProvider);
+                                        await player.stop();
+                                        await player.setAsset(
+                                            'assets/trap_millionaire.mp3');
+                                        await player.play();
                                       })
                                 ],
                               )
@@ -171,22 +177,34 @@ class MillionaireAnswerButton extends HookConsumerWidget {
         buttonWidth: 300,
         fontSize: 18,
         text: answer.answerText,
-        onPressed: () {
+        onPressed: () async {
+          var player = ref.watch(gameSoundProvider);
+          var effectPlayer = ref.watch(gameSoundEffectProvider);
           _clicked.value = true;
           ref.read(movingRegisProvider.notifier).state = false;
+          await player.stop();
 
-          Future.delayed(2500.ms).then((value) => showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  contentPadding: EdgeInsets.zero,
-                  content: AnswerModal(
-                    correct: answer.isCorrect,
-                  ),
-                );
-              }));
+          Future.delayed(2500.ms).then((value) async {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.transparent,
+                    contentPadding: EdgeInsets.zero,
+                    content: AnswerModal(
+                      correct: answer.isCorrect,
+                    ),
+                  );
+                });
+            if (answer.isCorrect) {
+              await effectPlayer.setAsset('assets/correct.mp3');
+              await effectPlayer.play();
+            } else {
+              await effectPlayer.setAsset('assets/incorrect.mp3');
+              await effectPlayer.play();
+            }
+          });
         });
   }
 }
@@ -224,7 +242,8 @@ class AnswerModal extends ConsumerWidget {
                 buttonWidth: 170,
                 fontSize: 20,
                 buttonHexStringColor: correct ? '09A655' : 'CC9744',
-                onPressed: () {
+                onPressed: () async {
+                  var player = ref.watch(gameSoundProvider);
                   if (correct) {
                     if (ref.watch(questionIndexProvider) > 14) {
                       Navigator.push(
@@ -232,7 +251,15 @@ class AnswerModal extends ConsumerWidget {
                         MaterialPageRoute(
                             builder: (context) => const WinningPage()),
                       );
+                      await player.stop();
+                      await player.setAsset('assets/trap_millionaire.mp3');
+                      await player.play();
                     }
+                    await player.stop().then(
+                      (value) {
+                        Future.delayed(4000.ms).then((value) => player.play());
+                      },
+                    );
                     ref.read(questionIndexProvider.notifier).state =
                         ref.read(questionIndexProvider) + 1;
                     Navigator.push(
@@ -243,6 +270,9 @@ class AnswerModal extends ConsumerWidget {
                   } else {
                     ref.read(questionIndexProvider.notifier).state = 0;
                     Navigator.of(context).popUntil((route) => route.isFirst);
+                    await player.stop();
+                    await player.setAsset('assets/trap_millionaire.mp3');
+                    await player.play();
                   }
                 },
               ),
