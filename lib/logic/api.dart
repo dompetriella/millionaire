@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:millionaire/models/answer.dart';
@@ -7,16 +8,16 @@ import '../models/question.dart';
 import '../provider.dart';
 import 'difficulty.dart';
 
-Future<Question> getQuestion(String difficulty) async {
+Future<List<Question>> getQuestions(String difficulty) async {
   final dio = Dio();
   var unescape = HtmlUnescape();
   Response response;
   response = await dio.get(
-      'https://opentdb.com/api.php?amount=5&category=9&difficulty=$difficulty&type=multiple');
+      'https://opentdb.com/api.php?amount=5&category=9&difficulty=easy&type=multiple');
 
   List<dynamic> questionsRaw = response.data['results'] as List;
 
-  Question retrievedQuestion = Question(questionText: '', answers: []);
+  List<Question> modifiedQuestions = [];
 
   for (var question in questionsRaw) {
     // get answers from JSON, make them object, put them all in a list, shuffle
@@ -30,22 +31,25 @@ Future<Question> getQuestion(String difficulty) async {
     answers.shuffle();
     // use the unescape library to clean the text from the JSON of html unwanteds
     var questionText = unescape.convert(question['question']);
-    retrievedQuestion = Question(questionText: questionText, answers: answers);
+
+    modifiedQuestions
+        .add((Question(questionText: questionText, answers: answers)));
   }
 
-  return retrievedQuestion;
+  return modifiedQuestions;
 }
 
-addQuestionToState(WidgetRef ref) async {
-  var index = ref.watch(questionIndexProvider);
-  if (index < 6) {
-    ref.read(questionProvider.notifier).state =
-        await getQuestion(Difficulty.easy.name);
-  } else if (index > 5 && index < 11) {
-    ref.read(questionProvider.notifier).state =
-        await getQuestion(Difficulty.easy.name);
-  } else {
-    ref.read(questionProvider.notifier).state =
-        await getQuestion(Difficulty.easy.name);
-  }
+Future<void> prepareQuestionsForState(WidgetRef ref) async {
+  List<Question> easyQuestions = await getQuestions(Difficulty.easy.name);
+  ref.read(questionListProvider.notifier).addQuestions(easyQuestions);
+
+  Future.delayed(5.seconds).then((value) async {
+    List<Question> mediumQuestions = await getQuestions(Difficulty.medium.name);
+    ref.read(questionListProvider.notifier).addQuestions(mediumQuestions);
+
+    Future.delayed(5.seconds).then((value) async {
+      List<Question> hardQuestions = await getQuestions(Difficulty.hard.name);
+      ref.read(questionListProvider.notifier).addQuestions(hardQuestions);
+    });
+  });
 }

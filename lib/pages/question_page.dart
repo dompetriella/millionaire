@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:millionaire/models/question.dart';
+import 'package:millionaire/pages/money_page.dart';
 import 'package:millionaire/pages/start_page.dart';
 import 'package:millionaire/pages/winning_page.dart';
 import 'package:millionaire/provider.dart';
@@ -13,63 +17,139 @@ class QuestionPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var questionObject = ref.watch(questionProvider);
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [HexColor('010044'), Colors.black])),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+    var questionObject =
+        ref.watch(questionListProvider)[ref.watch(questionIndexProvider)];
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
           children: [
-            Column(
-              children: [
-                SizedBox(height: 175, child: Image.asset('assets/regis.gif')),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Container(
-                    child: Text(
-                      questionObject.questionText,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Center(
+            Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [HexColor('010044'), Colors.black])),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  MillionaireAnswerButton(
-                    answer: questionObject.answers[0],
+                  Column(
+                    children: [
+                      SizedBox(
+                          height: 175,
+                          child: Image.asset(ref.watch(movingRegisProvider)
+                              ? 'assets/regis.gif'
+                              : 'assets/still_regis.png')),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Container(
+                          child: Text(
+                            questionObject.questionText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  MillionaireAnswerButton(
-                    answer: questionObject.answers[1],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  MillionaireAnswerButton(
-                    answer: questionObject.answers[2],
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  MillionaireAnswerButton(
-                    answer: questionObject.answers[3],
+                  Center(
+                    child: Column(
+                      children: [
+                        MillionaireAnswerButton(
+                          answer: questionObject.answers[0],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        MillionaireAnswerButton(
+                          answer: questionObject.answers[1],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        MillionaireAnswerButton(
+                          answer: questionObject.answers[2],
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        MillionaireAnswerButton(
+                          answer: questionObject.answers[3],
+                        ),
+                      ]
+                          .animate(interval: 650.ms, delay: 2500.ms)
+                          .slideX()
+                          .fadeIn(),
+                    ),
                   ),
                 ],
               ),
             ),
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      contentPadding: EdgeInsets.zero,
+                      content: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                            color: HexColor('010044'),
+                            border: Border.all(color: Colors.white, width: 3),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                'Quit Game?',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  MillionaireButton(
+                                      buttonWidth: 150,
+                                      buttonHexStringColor: 'CC9744',
+                                      text: 'Quit',
+                                      onPressed: () {
+                                        ref
+                                            .read(
+                                                questionIndexProvider.notifier)
+                                            .state = 0;
+                                        Navigator.popUntil(
+                                            context, (route) => route.isFirst);
+                                      })
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.close,
+                  size: 48,
+                  color: Colors.red.withOpacity(.50),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -77,29 +157,36 @@ class QuestionPage extends ConsumerWidget {
   }
 }
 
-class MillionaireAnswerButton extends StatelessWidget {
+class MillionaireAnswerButton extends HookConsumerWidget {
   final Answer answer;
+
   const MillionaireAnswerButton({super.key, required this.answer});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var _clicked = useState(false);
+
     return MillionaireButton(
-        buttonHexStringColor: '010044',
+        buttonHexStringColor: _clicked.value ? '09A655' : '010044',
         buttonWidth: 300,
         fontSize: 18,
         text: answer.answerText,
         onPressed: () {
-          showDialog(
+          _clicked.value = true;
+          ref.read(movingRegisProvider.notifier).state = false;
+
+          Future.delayed(2500.ms).then((value) => showDialog(
               barrierDismissible: false,
               context: context,
               builder: (context) {
                 return AlertDialog(
+                  backgroundColor: Colors.transparent,
                   contentPadding: EdgeInsets.zero,
                   content: AnswerModal(
                     correct: answer.isCorrect,
                   ),
                 );
-              });
+              }));
         });
   }
 }
@@ -138,7 +225,6 @@ class AnswerModal extends ConsumerWidget {
                 fontSize: 20,
                 buttonHexStringColor: correct ? '09A655' : 'CC9744',
                 onPressed: () {
-                  // pop pop
                   if (correct) {
                     if (ref.watch(questionIndexProvider) > 14) {
                       Navigator.push(
@@ -149,8 +235,11 @@ class AnswerModal extends ConsumerWidget {
                     }
                     ref.read(questionIndexProvider.notifier).state =
                         ref.read(questionIndexProvider) + 1;
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MoneyPage()),
+                    );
                   } else {
                     ref.read(questionIndexProvider.notifier).state = 0;
                     Navigator.of(context).popUntil((route) => route.isFirst);
@@ -161,6 +250,6 @@ class AnswerModal extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    ).animate(delay: 500.ms).fadeIn(duration: 800.ms);
   }
 }
